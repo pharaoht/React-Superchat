@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -53,8 +53,36 @@ function ChatRoom(){
   const messagesRef = firestore.collection('messages');
   const query = messages.orderBy('createdAt').limit(25);
 
-  const [messages] = useCollectionData(query, {idField: 'id'})
+  const [messages] = useCollectionData(query, {idField: 'id'});
 
+  const [formValue, setFormValue] = useState('');
+
+  return(
+    <>
+    <div>
+      {messages && messages.map(msg => <ChatMessage key={messages.id} message={msg}/>)}
+    </div>
+
+    <form onSubmit={sendMessage}>
+      <input value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
+      <button type='submit'>Send</button>
+    </form>
+
+    </>
+  )
+
+}
+
+function ChatMessage(props){
+  const { text, uid, photoURL } = props.message;
+  const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
+  return (
+    <div className={`message ${messageClass}`}>
+      <img src={photoURL}/>
+      <p>{text}</p>
+    </div>
+
+  )
 }
 
 export default App;
