@@ -53,6 +53,8 @@ function ChatRoom(){
   const messagesRef = firestore.collection('messages');
   const query = messages.orderBy('createdAt').limit(25);
 
+  const [messages] = useCollectionData(query, {idField: 'id'})
+
 }
 
 export default App;
